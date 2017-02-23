@@ -2,6 +2,7 @@ using BazaSmyczy.Core.Extensions;
 using BazaSmyczy.Core.Services;
 using BazaSmyczy.Data;
 using BazaSmyczy.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace BazaSmyczy.Controllers
 {
+    [Authorize]
     public class LeashController : Controller
     {
         private readonly LeashDbContext _context;
@@ -25,12 +27,14 @@ namespace BazaSmyczy.Controllers
         }
 
         // GET: Leashes
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Leashes.ToListAsync());
         }
 
         // GET: Leashes/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -113,10 +117,10 @@ namespace BazaSmyczy.Controllers
                     if (!newImageName.IsNullOrEmpty())
                     {
                         leash.ImageName = newImageName;
-
-                        _context.Update(leash);
-                        await _context.SaveChangesAsync();
                     }
+
+                    _context.Update(leash);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -167,6 +171,7 @@ namespace BazaSmyczy.Controllers
         }
 
         // GET: Leashes/ShowImage/5
+        [AllowAnonymous]
         public async Task<IActionResult> ShowImage(int? id)
         {
             if (id == null)

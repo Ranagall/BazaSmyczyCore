@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BazaSmyczy.Core.Config;
+using BazaSmyczy.Data;
+using BazaSmyczy.Extensions;
+using BazaSmyczy.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using BazaSmyczy.Data;
-using BazaSmyczy.Models;
-using BazaSmyczy.Services;
-using BazaSmyczy.Extensions;
 
 namespace BazaSmyczy
 {
@@ -39,6 +34,8 @@ namespace BazaSmyczy
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContexts(Configuration);
+
+            services.Configure<BazaSmyczyOptions>(Configuration.GetSection("BazaSmyczyOptions"));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -69,6 +66,7 @@ namespace BazaSmyczy
 
             app.UseIdentity();
 
+            app.UseRegistrationEndpoint(Configuration);
             app.UseMvcWithDefaultRoute();
         }
     }

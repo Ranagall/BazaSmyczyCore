@@ -1,4 +1,6 @@
-@model BazaSmyczy.Models.Leash
+@model Leash
+
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Details";
@@ -39,6 +41,9 @@
 <hr />
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+@if (SignInManager.IsSignedIn(User))
+{
+    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> @:|
+}
     <a asp-action="Index">Back to List</a>
 </div>
