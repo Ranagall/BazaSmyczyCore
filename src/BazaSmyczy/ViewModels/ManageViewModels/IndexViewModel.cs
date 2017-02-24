@@ -1,4 +1,4 @@
-﻿namespace BazaSmyczy.Models.ManageViewModels
+﻿namespace BazaSmyczy.ViewModels.ManageViewModels
 {
     public class IndexViewModel
     {

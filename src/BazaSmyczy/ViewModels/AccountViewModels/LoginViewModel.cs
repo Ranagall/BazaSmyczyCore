@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BazaSmyczy.Models.AccountViewModels
+namespace BazaSmyczy.ViewModels.AccountViewModels
 {
     public class LoginViewModel
     {
