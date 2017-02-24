@@ -4,10 +4,13 @@ using BazaSmyczy.Extensions;
 using BazaSmyczy.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace BazaSmyczy
 {
@@ -47,7 +50,7 @@ namespace BazaSmyczy
             services.AddInterfaces(Configuration);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public async void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -69,6 +72,9 @@ namespace BazaSmyczy
 
             app.UseRegistrationEndpoint(Configuration);
             app.UseMvcWithDefaultRoute();
+
+            await serviceProvider.CreateRoles();
+            await serviceProvider.CreateAdminUser(Configuration);
         }
     }
 }

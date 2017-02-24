@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BazaSmyczy.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class LeashController : Controller
     {
         private readonly LeashDbContext _context;
