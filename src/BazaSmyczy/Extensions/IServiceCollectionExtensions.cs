@@ -15,6 +15,9 @@ namespace BazaSmyczy.Extensions
 
             services.AddDbContext<LeashDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<TokenDbContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
         }
 
         public static void AddInterfaces(this IServiceCollection services, IConfigurationRoot configuration)
