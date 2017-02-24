@@ -34,7 +34,6 @@ namespace BazaSmyczy.Controllers
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
                 : message == ManageMessageId.Error ? "An error has occurred."
-                : message == ManageMessageId.ChangeUserNameSuccess ? "Your username has been changed."
                 : "";
 
             var user = await GetCurrentUserAsync();
@@ -80,39 +79,6 @@ namespace BazaSmyczy.Controllers
                 return View(model);
             }
             return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
-        }
-
-        // GET: /Manage/ChangeUsername
-        [HttpGet]
-        public IActionResult ChangeUsername()
-        {
-            return View();
-        }
-
-        // Post: /Manage/ChangeUsername
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangeUsername(ChangeUsernameViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var user = await GetCurrentUserAsync();
-            if(user != null)
-            {
-                var result = await _userManager.SetUserNameAsync(user, model.NewUsername);
-                if (result.Succeeded)
-                {
-                    await _userManager.UpdateNormalizedUserNameAsync(user);
-                    _logger.LogInformation(3, "User changed their username successfully.");
-                    return RedirectToAction(nameof(Index), new { Message = ManageMessageId.ChangeUserNameSuccess });
-                }
-                AddErrors(result);
-                return View(model);
-            }
-           return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
         }
 
         // GET: /Manage/SetPassword
@@ -161,7 +127,6 @@ namespace BazaSmyczy.Controllers
         {
             ChangePasswordSuccess,
             SetPasswordSuccess,
-            ChangeUserNameSuccess,
             Error
         }
 
