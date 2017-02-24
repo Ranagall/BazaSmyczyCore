@@ -1,5 +1,5 @@
 ﻿using BazaSmyczy.Models;
-using BazaSmyczy.Models.AccountViewModels;
+using BazaSmyczy.ViewModels.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
