@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BazaSmyczy.Core.Utils;
 
 namespace BazaSmyczy.Models
 {
@@ -12,7 +9,7 @@ namespace BazaSmyczy.Models
         public int ID { get; set; }
         public string ImageName { get; set; }
         public string Text { get; set; }
-        public string Size { get; set; }
+        public LeashSize Size { get; set; }
         public string Color { get; set; }
         public string Desc { get; set; }
     }

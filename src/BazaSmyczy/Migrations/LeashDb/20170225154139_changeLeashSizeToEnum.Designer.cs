@@ -8,9 +8,10 @@ using BazaSmyczy.Data;
 namespace BazaSmyczy.Migrations.LeashDb
 {
     [DbContext(typeof(LeashDbContext))]
-    partial class LeashDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170225154139_changeLeashSizeToEnum")]
+    partial class changeLeashSizeToEnum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
