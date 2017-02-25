@@ -38,10 +38,12 @@ namespace BazaSmyczy
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContexts(Configuration);
-
-            services.Configure<BazaSmyczyOptions>(Configuration.GetSection("BazaSmyczyOptions"));
-
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.ConfigureAppOptions(Configuration);
+            
+            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+            {
+                config.SignIn.RequireConfirmedEmail = true;
+            })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 

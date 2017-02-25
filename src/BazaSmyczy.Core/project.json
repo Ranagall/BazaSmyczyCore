@@ -2,10 +2,11 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "ImageSharp": "1.0.0-alpha2-00075",
-    "ImageSharp.Drawing": "1.0.0-alpha2-00075",
-    "ImageSharp.Formats.Jpeg": "1.0.0-alpha2-00075",
-    "ImageSharp.Processing": "1.0.0-alpha2-00063",
+    "ImageSharp": "1.0.0-alpha2-00115",
+    "ImageSharp.Drawing": "1.0.0-alpha2-00115",
+    "ImageSharp.Formats.Jpeg": "1.0.0-alpha2-00115",
+    "ImageSharp.Processing": "1.0.0-alpha2-00103",
+    "MailKit": "1.10.2",
     "Microsoft.AspNetCore.Http": "1.1.0",
     "NETStandard.Library": "1.6.1"
   },
