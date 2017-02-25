@@ -1,4 +1,5 @@
 ﻿using BazaSmyczy.Core.Config;
+using BazaSmyczy.Core.Consts;
 using BazaSmyczy.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -16,7 +17,7 @@ namespace BazaSmyczy.Extensions
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            string[] roleNames = { "Admin", "Member" };
+            string[] roleNames = { Roles.Administrator, Roles.Member };
 
             foreach (var role in roleNames)
             {
@@ -34,14 +35,14 @@ namespace BazaSmyczy.Extensions
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
             var adminConfig = configuration.GetSection("BazaSmyczyOptions:AdminAccount").Get<AdminAccountConfig>();
-            var user = new ApplicationUser { UserName = adminConfig.AdminUsername, Email = adminConfig.AdminEmail };
+            var user = new ApplicationUser { UserName = adminConfig.AdminUsername, Email = adminConfig.AdminEmail, EmailConfirmed = true };
 
             if (await userManager.FindByNameAsync(adminConfig.AdminUsername) == null)
             {
                 var result = await userManager.CreateAsync(user, adminConfig.AdminPassword);
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(user, "Admin");
+                    await userManager.AddToRoleAsync(user, Roles.Administrator);
                 }
             }
         }

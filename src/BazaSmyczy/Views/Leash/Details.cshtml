@@ -1,6 +1,7 @@
 @model Leash
 
 @inject SignInManager<ApplicationUser> SignInManager
+@using BazaSmyczy.Core.Consts
 
 @{
     ViewData["Title"] = "Details";
@@ -41,7 +42,7 @@
 <hr />
 
 <div>
-@if (SignInManager.IsSignedIn(User))
+@if (SignInManager.IsSignedIn(User) && User.IsInRole(Roles.Administrator))
 {
     <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> @:|
 }

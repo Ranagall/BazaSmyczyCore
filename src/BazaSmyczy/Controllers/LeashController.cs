@@ -1,3 +1,4 @@
+using BazaSmyczy.Core.Consts;
 using BazaSmyczy.Core.Extensions;
 using BazaSmyczy.Core.Services;
 using BazaSmyczy.Data;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace BazaSmyczy.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Roles.Administrator)]
     public class LeashController : Controller
     {
         private readonly LeashDbContext _context;
@@ -76,6 +77,7 @@ namespace BazaSmyczy.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Index");
                 }
+                ModelState.AddModelError(string.Empty, "Invalid image");
             }
             return View(leash);
         }

@@ -1,6 +1,7 @@
 @model IEnumerable<Leash>
 
 @inject SignInManager<ApplicationUser> SignInManager
+@using BazaSmyczy.Core.Consts
 
 <link rel="stylesheet" href="~/css/autoModal.css" />
 
@@ -10,7 +11,7 @@
 
 <h2>Index</h2>
 
-@if (SignInManager.IsSignedIn(User))
+@if (SignInManager.IsSignedIn(User) && User.IsInRole(Roles.Administrator))
 {
     <p>
         <a asp-action="Create">Create New</a>
@@ -52,7 +53,7 @@
                     @Html.DisplayFor(modelItem => item.Desc)
                 </td>
                 <td>
-                    @if (SignInManager.IsSignedIn(User))
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole(Roles.Administrator))
                     {
                         <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> @:|
                         <a asp-action="Delete" asp-route-id="@item.ID">Delete</a> @:|

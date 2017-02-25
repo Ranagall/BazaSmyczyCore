@@ -1,4 +1,5 @@
-﻿using BazaSmyczy.Core.Services;
+﻿using BazaSmyczy.Core.Consts;
+using BazaSmyczy.Core.Services;
 using BazaSmyczy.Models;
 using BazaSmyczy.ViewModels.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -110,7 +111,7 @@ namespace BazaSmyczy.Controllers
                         protocol: HttpContext.Request.Scheme);
                     await _emailSender.SendAccountConfirmationEmail(user.Email, callbackUrl);
 
-                    await _userManager.AddToRoleAsync(user, "Member");
+                    await _userManager.AddToRoleAsync(user, Roles.Member);
                     _logger.LogInformation(3, "User created a new account with password.");
                     return RedirectToLocal(returnUrl);
                 }
