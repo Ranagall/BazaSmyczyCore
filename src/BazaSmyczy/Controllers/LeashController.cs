@@ -73,6 +73,7 @@ namespace BazaSmyczy.Controllers
                 {
                     leash.ImageName = newFileName;
 
+                    leash.Color = leash.Color.ToTitleCase();
                     _context.Add(leash);
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Index");
@@ -121,6 +122,7 @@ namespace BazaSmyczy.Controllers
                         leash.ImageName = newImageName;
                     }
 
+                    leash.Color = leash.Color.ToTitleCase();
                     _context.Update(leash);
                     await _context.SaveChangesAsync();
                 }
