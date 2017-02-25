@@ -78,7 +78,11 @@ namespace BazaSmyczy.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Index");
                 }
-                ModelState.AddModelError(string.Empty, "Invalid image");
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid image");
+                    return View(leash);
+                }
             }
             return View(leash);
         }
@@ -114,12 +118,19 @@ namespace BazaSmyczy.Controllers
                 try
                 {
                     var file = Request.Form.Files["picture"];
-
-                    var newImageName = await _uploadManager.ReplaceFile(file, GetUploadsPath(), leash.ImageName);
-
-                    if (!newImageName.IsNullOrEmpty())
+                    if (!file.IsNullOrEmpty())
                     {
-                        leash.ImageName = newImageName;
+                        var newImageName = await _uploadManager.ReplaceFile(file, GetUploadsPath(), leash.ImageName);
+
+                        if (!newImageName.IsNullOrEmpty())
+                        {
+                            leash.ImageName = newImageName;
+                        }
+                        else
+                        {
+                            ModelState.AddModelError(string.Empty, "Invalid File");
+                            return View(leash);
+                        }
                     }
 
                     leash.Color = leash.Color.ToTitleCase();
