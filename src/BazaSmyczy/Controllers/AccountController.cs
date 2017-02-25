@@ -16,18 +16,18 @@ namespace BazaSmyczy.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
-        private readonly ILogger _logger;
+        private readonly ILogger<AccountController> _logger;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
-            ILoggerFactory loggerFactory)
+            ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
-            _logger = loggerFactory.CreateLogger<AccountController>();
+            _logger = logger;
         }
 
         // GET: /Account/Login
@@ -101,7 +101,7 @@ namespace BazaSmyczy.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
-                var existingUser = _userManager.FindByEmailAsync(model.Email);
+                var existingUser = await _userManager.FindByEmailAsync(model.Email);
                 if (existingUser != null)
                 {
                     ModelState.AddModelError(string.Empty, "Email is already used.");
@@ -119,7 +119,7 @@ namespace BazaSmyczy.Controllers
 
                     await _userManager.AddToRoleAsync(user, Roles.Member);
                     _logger.LogInformation(3, "User created a new account with password.");
-                    return RedirectToLocal(returnUrl);
+                    return View("SendConfirmationEmail");
                 }
                 AddErrors(result);
             }

@@ -13,16 +13,16 @@ namespace BazaSmyczy.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ILogger _logger;
+        private readonly ILogger<ManageController> _logger;
 
         public ManageController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
-        ILoggerFactory loggerFactory)
+        ILogger<ManageController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _logger = loggerFactory.CreateLogger<ManageController>();
+            _logger = logger;
         }
 
         //

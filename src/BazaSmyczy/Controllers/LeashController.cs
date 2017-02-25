@@ -5,8 +5,10 @@ using BazaSmyczy.Data;
 using BazaSmyczy.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,12 +21,21 @@ namespace BazaSmyczy.Controllers
         private readonly LeashDbContext _context;
         private readonly IHostingEnvironment _environment;
         private readonly IUploadManager _uploadManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<LeashController> _logger;
 
-        public LeashController(LeashDbContext context, IHostingEnvironment environment, IUploadManager uploadManager)
+        public LeashController(
+            LeashDbContext context,
+            IHostingEnvironment environment,
+            IUploadManager uploadManager,
+            UserManager<ApplicationUser> userManager,
+            ILogger<LeashController> logger)
         {
             _context = context;
             _environment = environment;
             _uploadManager = uploadManager;
+            _userManager = userManager;
+            _logger = logger;
         }
 
         // GET: Leashes
@@ -76,6 +87,7 @@ namespace BazaSmyczy.Controllers
                     leash.Color = leash.Color.ToTitleCase();
                     _context.Add(leash);
                     await _context.SaveChangesAsync();
+                    _logger.LogInformation(EventsIds.LeashCreated, $"User {await GetCurrentUserNameAsync()} created new leash");
                     return RedirectToAction("Index");
                 }
                 else
@@ -135,6 +147,7 @@ namespace BazaSmyczy.Controllers
 
                     leash.Color = leash.Color.ToTitleCase();
                     _context.Update(leash);
+                    _logger.LogInformation(EventsIds.LeashEdited, $"User {await GetCurrentUserNameAsync()} edited leash with id: {leash.ID}");
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -182,6 +195,7 @@ namespace BazaSmyczy.Controllers
 
             _context.Leashes.Remove(leash);
             await _context.SaveChangesAsync();
+            _logger.LogInformation(EventsIds.LeashDeleted, $"User {await GetCurrentUserNameAsync()} deleted leash");
             return RedirectToAction("Index");
         }
 
@@ -211,6 +225,12 @@ namespace BazaSmyczy.Controllers
         private string GetUploadsPath()
         {
             return Path.Combine(_environment.WebRootPath, "uploads\\leashes");
+        }
+
+        private async Task<string> GetCurrentUserNameAsync()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            return user.UserName;
         }
     }
 }
