@@ -49,7 +49,7 @@ namespace BazaSmyczy.Extensions
             }
         }
 
-        public static void SeedDb(this IServiceProvider serviceProvider)
+        public static void UpdateDb(this IServiceProvider serviceProvider)
         {
             var leashContext = serviceProvider.GetRequiredService<LeashDbContext>();
             var appContext = serviceProvider.GetRequiredService<ApplicationDbContext>();

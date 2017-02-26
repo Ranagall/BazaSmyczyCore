@@ -1,7 +1,10 @@
 @model Leash
 
-@inject SignInManager<ApplicationUser> SignInManager
+@using Microsoft.Extensions.Options;
 @using BazaSmyczy.Core.Consts
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IOptions<BazaSmyczy.Core.Config.BazaSmyczyOptions> options
 
 @{
     ViewData["Title"] = "Details";
@@ -37,7 +40,7 @@
             @Html.DisplayFor(model => model.Desc)
         </dd>
     </dl>
-    <img src="~/uploads/leashes/@Model.ImageName" alt="Image" class="img-responsive center-block" />
+    <img src="~/@options.Value.UploadsPath/@Model.ImageName" alt="Image" class="img-responsive center-block" />
 </div>
 <hr />
 
