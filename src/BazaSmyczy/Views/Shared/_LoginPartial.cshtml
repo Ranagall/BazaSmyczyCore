@@ -2,6 +2,7 @@
 @using BazaSmyczy.Models
 @using Microsoft.Extensions.Options;
 @using BazaSmyczy.Core.Config
+@using BazaSmyczy.Core.Consts
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -11,6 +12,12 @@
 {
     <form asp-area="" asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
+            @if (User.IsInRole(Roles.Administrator))
+            {
+                <li>
+                    <a asp-area="" asp-controller="AdminPanel" asp-action="Index">Admin panel</a>
+                </li>
+            }
             <li>
                 <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
             </li>

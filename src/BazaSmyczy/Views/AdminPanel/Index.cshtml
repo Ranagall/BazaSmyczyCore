@@ -1,0 +1,15 @@
+﻿@using Microsoft.AspNetCore.Hosting
+
+@inject IHostingEnvironment env
+
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<hr />
+
+<div class="text-right small">
+    <p>Environment: @env.EnvironmentName</p>
+</div>
