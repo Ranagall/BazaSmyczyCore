@@ -8,7 +8,7 @@ using BazaSmyczy.Data;
 namespace BazaSmyczy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170217174546_init")]
+    [Migration("20170225223534_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

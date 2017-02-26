@@ -68,6 +68,8 @@ namespace BazaSmyczy
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            serviceProvider.SeedDb();
+
             app.UseStaticFiles();
 
             app.UseIdentity();

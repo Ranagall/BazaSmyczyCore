@@ -15,11 +15,11 @@ namespace BazaSmyczy.Migrations.LeashDb
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Color = table.Column<string>(nullable: true),
+                    Color = table.Column<string>(nullable: false),
                     Desc = table.Column<string>(nullable: true),
                     ImageName = table.Column<string>(nullable: true),
-                    Size = table.Column<string>(nullable: true),
-                    Text = table.Column<string>(nullable: true)
+                    Size = table.Column<int>(nullable: false),
+                    Text = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {

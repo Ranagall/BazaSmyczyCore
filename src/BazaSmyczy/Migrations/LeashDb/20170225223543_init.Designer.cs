@@ -8,8 +8,8 @@ using BazaSmyczy.Data;
 namespace BazaSmyczy.Migrations.LeashDb
 {
     [DbContext(typeof(LeashDbContext))]
-    [Migration("20170225154139_changeLeashSizeToEnum")]
-    partial class changeLeashSizeToEnum
+    [Migration("20170225223543_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,7 +22,8 @@ namespace BazaSmyczy.Migrations.LeashDb
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Color");
+                    b.Property<string>("Color")
+                        .IsRequired();
 
                     b.Property<string>("Desc");
 
@@ -30,7 +31,8 @@ namespace BazaSmyczy.Migrations.LeashDb
 
                     b.Property<int>("Size");
 
-                    b.Property<string>("Text");
+                    b.Property<string>("Text")
+                        .IsRequired();
 
                     b.HasKey("ID");
 

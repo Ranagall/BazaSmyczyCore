@@ -1,3 +1,4 @@
+using BazaSmyczy.Core.Config;
 using BazaSmyczy.Core.Consts;
 using BazaSmyczy.Core.Extensions;
 using BazaSmyczy.Core.Services;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,19 +25,22 @@ namespace BazaSmyczy.Controllers
         private readonly IUploadManager _uploadManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LeashController> _logger;
+        private readonly BazaSmyczyOptions _options;
 
         public LeashController(
             LeashDbContext context,
             IHostingEnvironment environment,
             IUploadManager uploadManager,
             UserManager<ApplicationUser> userManager,
-            ILogger<LeashController> logger)
+            ILogger<LeashController> logger,
+            IOptions<BazaSmyczyOptions> options)
         {
             _context = context;
             _environment = environment;
             _uploadManager = uploadManager;
             _userManager = userManager;
             _logger = logger;
+            _options = options.Value;
         }
 
         // GET: Leashes
@@ -224,7 +229,7 @@ namespace BazaSmyczy.Controllers
 
         private string GetUploadsPath()
         {
-            return Path.Combine(_environment.WebRootPath, "uploads\\leashes");
+            return Path.Combine(_environment.WebRootPath, _options.UploadsPath);
         }
 
         private async Task<string> GetCurrentUserNameAsync()

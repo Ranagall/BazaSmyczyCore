@@ -1,8 +1,10 @@
 ﻿using BazaSmyczy.Core.Config;
 using BazaSmyczy.Core.Consts;
+using BazaSmyczy.Data;
 using BazaSmyczy.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -45,6 +47,15 @@ namespace BazaSmyczy.Extensions
                     await userManager.AddToRoleAsync(user, Roles.Administrator);
                 }
             }
+        }
+
+        public static void SeedDb(this IServiceProvider serviceProvider)
+        {
+            var leashContext = serviceProvider.GetRequiredService<LeashDbContext>();
+            var appContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+
+            leashContext.Database.Migrate();
+            appContext.Database.Migrate();
         }
     }
 }

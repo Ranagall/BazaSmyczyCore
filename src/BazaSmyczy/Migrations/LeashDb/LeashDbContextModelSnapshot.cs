@@ -26,8 +26,7 @@ namespace BazaSmyczy.Migrations.LeashDb
 
                     b.Property<string>("Desc");
 
-                    b.Property<string>("ImageName")
-                        .IsRequired();
+                    b.Property<string>("ImageName");
 
                     b.Property<int>("Size");
 
