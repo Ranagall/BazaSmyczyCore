@@ -55,18 +55,15 @@ namespace BazaSmyczy.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
+                if (leash != null)
+                {
+                    return View(leash);
+                }
             }
-
-            var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
-            if (leash == null)
-            {
-                return NotFound();
-            }
-
-            return View(leash);
+            return NotFound();
         }
 
         // GET: Leashes/Create
@@ -108,17 +105,15 @@ namespace BazaSmyczy.Controllers
         // GET: Leashes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
+                if (leash != null)
+                {
+                    return View(leash);
+                }
             }
-
-            var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
-            if (leash == null)
-            {
-                return NotFound();
-            }
-            return View(leash);
+            return NotFound();
         }
 
         // POST: Leashes/Edit/5
@@ -175,18 +170,15 @@ namespace BazaSmyczy.Controllers
         // GET: Leashes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
+                if (leash != null)
+                {
+                    return View(leash);
+                }
             }
-
-            var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
-            if (leash == null)
-            {
-                return NotFound();
-            }
-
-            return View(leash);
+            return NotFound();
         }
 
         // POST: Leashes/Delete/5
@@ -196,7 +188,7 @@ namespace BazaSmyczy.Controllers
         {
             var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
 
-            var oldImagePath = Path.Combine(GetUploadsPath(), leash.ImageName ?? "");
+            var oldImagePath = Path.Combine(GetUploadsPath(), leash.ImageName ?? string.Empty);
             _uploadManager.DeleteFileIfExists(oldImagePath);
 
             _context.Leashes.Remove(leash);
@@ -209,18 +201,15 @@ namespace BazaSmyczy.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ShowImage(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
+                if (leash != null)
+                {
+                    return PartialView(new ShowImageViewModel { ImageName = leash.ImageName });
+                }
             }
-
-            var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
-            if (leash == null)
-            {
-                return NotFound();
-            }
-
-            return PartialView(new ShowImageViewModel { ImageName = leash.ImageName });
+            return NotFound();
         }
 
         private bool LeashExists(int id)
