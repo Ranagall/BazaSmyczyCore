@@ -25,28 +25,27 @@ namespace BazaSmyczy.Core.Services
             await SendEmail(recipient, subject, body);
         }
 
-        public async Task SendEmail(string recipient, string subject, string body)
+        public async Task SendEmail(string recipient, string subject, string htmlBody)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("BazaSmyczy Notifications", "noreply@bazasmyczy.ovh"));
+            message.From.Add(new MailboxAddress(_clientOptions.Name, _clientOptions.Address));
             message.To.Add(new MailboxAddress(recipient));
             message.Subject = subject;
-
             message.Body = new TextPart("html")
             {
-                Text = body
+                Text = htmlBody
             };
 
             using (var client = new SmtpClient())
             {
-                await client.ConnectAsync(_clientOptions.Host, _clientOptions.Port, true);
+                await client.ConnectAsync(_clientOptions.Host, _clientOptions.Port, _clientOptions.UseSsl);
 
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
 
-                client.Authenticate(_clientOptions.Username, _clientOptions.Password);
+                await client.AuthenticateAsync(_clientOptions.Username, _clientOptions.Password);
 
-                client.Send(message);
-                client.Disconnect(true);
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
             }
         }
     }
