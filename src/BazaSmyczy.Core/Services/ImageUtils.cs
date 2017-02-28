@@ -13,21 +13,22 @@ namespace BazaSmyczy.Core.Services
         public bool IsValidImage(IFormFile file)
         {
             var extension = Path.GetExtension(file.FileName);
-            if (!extension.Equals(".jpg") && !extension.Equals(".jpeg"))
+            if (!extension.Equals(".jpg") && !extension.Equals(".jpeg") && !extension.Equals(".png"))
             {
                 return false;
             }
 
-            if (!file.ContentType.ToLower().Equals("image/jpg") && !file.ContentType.ToLower().Equals("image/jpeg"))
+            if (!file.ContentType.ToLower().Equals("image/jpg") && !file.ContentType.ToLower().Equals("image/jpeg") && !file.ContentType.ToLower().Equals("image/png"))
             {
                 return false;
             }
 
             var jpegBytes = new byte[] { 255, 216, 255 };
+            var pngBytes = new byte[] { 137, 80, 78 };
             var reader = new BinaryReader(file.OpenReadStream());
             var fileBytes = reader.ReadBytes(jpegBytes.Length);
 
-            if (!fileBytes.SequenceEqual(jpegBytes))
+            if (!fileBytes.SequenceEqual(jpegBytes) && !fileBytes.SequenceEqual(pngBytes))
             {
                 return false;
             }
