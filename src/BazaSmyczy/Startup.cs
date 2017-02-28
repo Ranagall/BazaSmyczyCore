@@ -1,16 +1,13 @@
-﻿using BazaSmyczy.Core.Config;
-using BazaSmyczy.Data;
+﻿using BazaSmyczy.Data;
 using BazaSmyczy.Extensions;
 using BazaSmyczy.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Threading.Tasks;
 
 namespace BazaSmyczy
 {
@@ -20,9 +17,9 @@ namespace BazaSmyczy
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddJsonFile("hosting.json", optional: true);
+                .AddJsonFile("configs/appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"configs/appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile("configs/hosting.json", optional: true);
 
             if (env.IsDevelopment())
             {
@@ -38,8 +35,9 @@ namespace BazaSmyczy
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContexts(Configuration);
+            services.AddOptions();
             services.ConfigureAppOptions(Configuration);
-            
+
             services.AddIdentity<ApplicationUser, IdentityRole>(config =>
             {
                 config.SignIn.RequireConfirmedEmail = true;

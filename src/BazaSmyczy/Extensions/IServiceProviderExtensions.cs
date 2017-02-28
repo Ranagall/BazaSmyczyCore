@@ -1,4 +1,4 @@
-﻿using BazaSmyczy.Core.Config;
+﻿using BazaSmyczy.Core.Configs;
 using BazaSmyczy.Core.Consts;
 using BazaSmyczy.Data;
 using BazaSmyczy.Models;
@@ -36,7 +36,7 @@ namespace BazaSmyczy.Extensions
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            var adminConfig = configuration.GetSection("BazaSmyczyOptions:AdminAccount").Get<AdminAccountConfig>();
+            var adminConfig = configuration.GetSection("AdminAccountConfig").Get<AdminAccountConfig>();
             var user = new ApplicationUser { UserName = adminConfig.AdminUsername, Email = adminConfig.AdminEmail, EmailConfirmed = true };
 
             if (await userManager.FindByNameAsync(adminConfig.AdminUsername) == null)

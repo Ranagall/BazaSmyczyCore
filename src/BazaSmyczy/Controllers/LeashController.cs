@@ -1,4 +1,4 @@
-using BazaSmyczy.Core.Config;
+using BazaSmyczy.Core.Configs;
 using BazaSmyczy.Core.Consts;
 using BazaSmyczy.Core.Extensions;
 using BazaSmyczy.Core.Services;

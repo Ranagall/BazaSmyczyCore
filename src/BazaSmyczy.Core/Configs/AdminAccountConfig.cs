@@ -1,4 +1,4 @@
-﻿namespace BazaSmyczy.Core.Config
+﻿namespace BazaSmyczy.Core.Configs
 {
     public class AdminAccountConfig
     {

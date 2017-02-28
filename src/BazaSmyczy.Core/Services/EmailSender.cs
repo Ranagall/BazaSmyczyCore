@@ -1,4 +1,4 @@
-﻿using BazaSmyczy.Core.Config;
+﻿using BazaSmyczy.Core.Configs;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;

@@ -1,4 +1,4 @@
-﻿using BazaSmyczy.Core.Config;
+﻿using BazaSmyczy.Core.Configs;
 using BazaSmyczy.Core.Services;
 using BazaSmyczy.Data;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +31,7 @@ namespace BazaSmyczy.Extensions
         public static void ConfigureAppOptions(this IServiceCollection services, IConfigurationRoot configuration)
         {
             services.Configure<BazaSmyczyOptions>(configuration.GetSection("BazaSmyczyOptions"));
-            services.Configure<EmailClientConfig>(configuration.GetSection("BazaSmyczyOptions:EmailClient"));
+            services.Configure<EmailClientConfig>(configuration.GetSection("EmailClient"));
         }
     }
 }
