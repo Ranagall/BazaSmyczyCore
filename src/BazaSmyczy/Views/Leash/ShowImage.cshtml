@@ -1,4 +1,4 @@
-﻿@model Leash
+﻿@model BazaSmyczy.ViewModels.LeashViewModels.ShowImageViewModel
 
 @using Microsoft.Extensions.Options;
 
@@ -13,7 +13,20 @@
     </div>
 
     <div class="modal-body">
-        <img src="~/@options.Value.UploadsPath/@Model.ImageName" alt="Image" class="img-responsive center-block" />
+        <div id="img-container">
+            <img src="~/@options.Value.UploadsPath/@Model.ImageName" />
+        </div>
     </div>
 
 </div>
+
+<style>
+    #img-container {
+        width: auto;
+        margin: 1vh auto;
+    }
+
+        #img-container img {
+            max-width: 100%;
+        }
+</style>

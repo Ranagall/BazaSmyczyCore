@@ -3,8 +3,6 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @using BazaSmyczy.Core.Consts
 
-<link rel="stylesheet" href="~/css/autoModal.css" />
-
 @{
     ViewData["Title"] = "Index";
 }
@@ -72,3 +70,15 @@
         </div>
     </div>
 </div>
+
+<style>
+    .modal-dialog {
+        position: relative;
+        display: table;
+        max-width: 60%;
+        width: auto;
+        overflow-y: auto;
+        overflow-x: auto;
+        min-width: 300px;
+    }
+</style>

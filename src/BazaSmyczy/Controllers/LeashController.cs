@@ -4,6 +4,7 @@ using BazaSmyczy.Core.Extensions;
 using BazaSmyczy.Core.Services;
 using BazaSmyczy.Data;
 using BazaSmyczy.Models;
+using BazaSmyczy.ViewModels.LeashViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -219,7 +220,7 @@ namespace BazaSmyczy.Controllers
                 return NotFound();
             }
 
-            return PartialView(leash);
+            return PartialView(new ShowImageViewModel { ImageName = leash.ImageName });
         }
 
         private bool LeashExists(int id)
