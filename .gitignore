@@ -276,3 +276,6 @@ __pycache__/
 
 # Uploaded files
 **/wwwroot/uploads/leashes/*
+
+# AppSettings for production etc
+**/appsettings.*.json
