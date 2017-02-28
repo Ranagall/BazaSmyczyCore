@@ -50,7 +50,7 @@ namespace BazaSmyczy.Core.Services
                     image.RotateFlip(RotateType.Rotate270, FlipType.None);
                 }
 
-                image = ResizeBiggerToFit(image, 800, 600);
+                image = ResizeBiggerToFit(image, 1024, 768);
 
                 return image;
             }
