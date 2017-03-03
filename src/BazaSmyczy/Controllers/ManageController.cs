@@ -1,4 +1,5 @@
-﻿using BazaSmyczy.Models;
+﻿using BazaSmyczy.Core.Consts;
+using BazaSmyczy.Models;
 using BazaSmyczy.ViewModels.ManageViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -72,7 +73,7 @@ namespace BazaSmyczy.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation(3, "User changed their password successfully.");
+                    _logger.LogInformation(EventsIds.Account.ChangedPassword, "User changed their password successfully.");
                     return RedirectToAction(nameof(Index), new { Message = ManageMessageId.ChangePasswordSuccess });
                 }
                 AddErrors(result);

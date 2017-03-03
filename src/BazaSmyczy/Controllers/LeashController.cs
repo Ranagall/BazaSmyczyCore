@@ -90,7 +90,7 @@ namespace BazaSmyczy.Controllers
                     leash.Color = leash.Color.ToTitleCase();
                     _context.Add(leash);
                     await _context.SaveChangesAsync();
-                    _logger.LogInformation(EventsIds.LeashCreated, $"User {await GetCurrentUserNameAsync()} created new leash");
+                    _logger.LogInformation(EventsIds.Leash.Created, $"User {await GetCurrentUserNameAsync()} created new leash");
                     return RedirectToAction("Index");
                 }
                 else
@@ -148,7 +148,7 @@ namespace BazaSmyczy.Controllers
 
                     leash.Color = leash.Color.ToTitleCase();
                     _context.Update(leash);
-                    _logger.LogInformation(EventsIds.LeashEdited, $"User {await GetCurrentUserNameAsync()} edited leash with id: {leash.ID}");
+                    _logger.LogInformation(EventsIds.Leash.Edited, $"User {await GetCurrentUserNameAsync()} edited leash with id: {leash.ID}");
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -193,7 +193,7 @@ namespace BazaSmyczy.Controllers
 
             _context.Leashes.Remove(leash);
             await _context.SaveChangesAsync();
-            _logger.LogInformation(EventsIds.LeashDeleted, $"User {await GetCurrentUserNameAsync()} deleted leash");
+            _logger.LogInformation(EventsIds.Leash.Deleted, $"User {await GetCurrentUserNameAsync()} deleted leash");
             return RedirectToAction("Index");
         }
 

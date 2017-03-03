@@ -64,14 +64,15 @@ namespace BazaSmyczy.Controllers
                 {
                     if(await _userManager.IsInRoleAsync(user, Roles.Administrator))
                     {
-                        _logger.LogInformation(5, $"User from {HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress} logged in to admin account( {user.UserName} )");
+                        var ipAddress = HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress;
+                        _logger.LogInformation(EventsIds.Account.AdminLogged, $"User from {ipAddress} logged in to admin account( {user.UserName} )");
                     }
                     await _userManager.ResetAccessFailedCountAsync(user);
                     return RedirectToLocal(returnUrl);
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning(2, $"User {user.UserName} locked out.");
+                    _logger.LogWarning(EventsIds.Account.LockedOut, $"User {user.UserName} locked out.");
                     return View("Lockout");
                 }
                 else
@@ -121,7 +122,7 @@ namespace BazaSmyczy.Controllers
                     await _emailSender.SendAccountConfirmationEmail(user.Email, callbackUrl);
 
                     await _userManager.AddToRoleAsync(user, Roles.Member);
-                    _logger.LogInformation(3, "User created a new account with password.");
+                    _logger.LogInformation(EventsIds.Account.Created, "User created a new account with password.");
                     return View("SendConfirmationEmail");
                 }
                 AddErrors(result);

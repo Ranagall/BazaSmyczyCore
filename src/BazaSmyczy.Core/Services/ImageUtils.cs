@@ -1,6 +1,8 @@
-﻿using ImageSharp;
+﻿using BazaSmyczy.Core.Consts;
+using ImageSharp;
 using ImageSharp.Processing;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,16 +12,28 @@ namespace BazaSmyczy.Core.Services
 {
     public class ImageUtils : IImageUtils
     {
+        private readonly ILogger<ImageUtils> _logger;
+
+        private const int ImageWidth = 1024;
+        private const int ImageHeight = 768;
+
+        public ImageUtils(ILogger<ImageUtils> logger)
+        {
+            _logger = logger;
+        }
+
         public bool IsValidImage(IFormFile file)
         {
             var extension = Path.GetExtension(file.FileName);
             if (!extension.Equals(".jpg") && !extension.Equals(".jpeg") && !extension.Equals(".png"))
             {
+                _logger.LogWarning(EventsIds.File.InvalidExt, $"Unwanted file extension: {extension}");
                 return false;
             }
 
             if (!file.ContentType.ToLower().Equals("image/jpg") && !file.ContentType.ToLower().Equals("image/jpeg") && !file.ContentType.ToLower().Equals("image/png"))
             {
+                _logger.LogWarning(EventsIds.File.InvalidContentType, $"Unwanted content type: {file.ContentType}");
                 return false;
             }
 
@@ -30,6 +44,7 @@ namespace BazaSmyczy.Core.Services
 
             if (!fileBytes.SequenceEqual(jpegBytes) && !fileBytes.SequenceEqual(pngBytes))
             {
+                _logger.LogWarning(EventsIds.File.InvalidSignature, $"Unwanted file signature: {fileBytes}");
                 return false;
             }
 
@@ -50,7 +65,7 @@ namespace BazaSmyczy.Core.Services
                     image.RotateFlip(RotateType.Rotate270, FlipType.None);
                 }
 
-                image = ResizeBiggerToFit(image, 1024, 768);
+                image = ResizeBiggerToFit(image, ImageWidth, ImageHeight);
 
                 return image;
             }
