@@ -3,6 +3,7 @@ using BazaSmyczy.Core.Services;
 using BazaSmyczy.Models;
 using BazaSmyczy.ViewModels.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -58,27 +59,29 @@ namespace BazaSmyczy.Controllers
                     }
                 }
 
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation(1, "User logged in.");
+                    if(await _userManager.IsInRoleAsync(user, Roles.Administrator))
+                    {
+                        _logger.LogInformation(5, $"User from {HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress} logged in to admin account( {user.UserName} )");
+                    }
+                    await _userManager.ResetAccessFailedCountAsync(user);
                     return RedirectToLocal(returnUrl);
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning(2, "User account locked out.");
+                    _logger.LogWarning(2, $"User {user.UserName} locked out.");
                     return View("Lockout");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    var attemptsLeft = IdentityConsts.MaxFailedAccessAttempts - await _userManager.GetAccessFailedCountAsync(user);
+                    ModelState.AddModelError(string.Empty, $"Invalid login attempt. Attempts to lock: {attemptsLeft}");
                     return View(model);
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
@@ -151,7 +154,6 @@ namespace BazaSmyczy.Controllers
         public async Task<IActionResult> LogOff()
         {
             await _signInManager.SignOutAsync();
-            _logger.LogInformation(4, "User logged out.");
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 

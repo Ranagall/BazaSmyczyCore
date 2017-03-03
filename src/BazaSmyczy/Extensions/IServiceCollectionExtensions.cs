@@ -1,10 +1,15 @@
 ﻿using BazaSmyczy.Core.Configs;
+using BazaSmyczy.Core.Consts;
 using BazaSmyczy.Core.Services;
 using BazaSmyczy.Data;
+using BazaSmyczy.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace BazaSmyczy.Extensions
 {
@@ -35,6 +40,22 @@ namespace BazaSmyczy.Extensions
         {
             services.Configure<BazaSmyczyOptions>(configuration.GetSection("BazaSmyczyOptions"));
             services.Configure<EmailClientConfig>(configuration.GetSection("EmailClient"));
+        }
+
+        public static void ConfigureIdentity(this IServiceCollection services)
+        {
+            var lockoutOptions = new LockoutOptions()
+            {
+                DefaultLockoutTimeSpan = TimeSpan.FromMinutes(IdentityConsts.LockoutDuration),
+                MaxFailedAccessAttempts = IdentityConsts.MaxFailedAccessAttempts
+            };
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+            {
+                config.Lockout = lockoutOptions;
+            })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
         }
     }
 }
