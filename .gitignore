@@ -277,5 +277,6 @@ __pycache__/
 # Uploaded files
 **/wwwroot/uploads/leashes/*
 
-# AppSettings for production etc
+# Production configs
 **/appsettings.*.json
+**/nlog.Production.config

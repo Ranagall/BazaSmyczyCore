@@ -47,7 +47,12 @@
     "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.0",
     "Microsoft.AspNetCore.StaticFiles": "1.1.0",
     "Microsoft.DotNet.InternalAbstractions": "1.0.0",
-    "BazaSmyczy.Core": "1.0.0-*"
+    "BazaSmyczy.Core": {
+      "target": "project"
+    },
+    "NLog.Web.AspNetCore": "4.3.1",
+    "NLog.Schema": "4.4.3",
+    "NLog.Config": "4.4.3"
   },
 
   "tools": {
@@ -88,9 +93,8 @@
     "include": [
       "wwwroot",
       "**/*.cshtml",
-      "appsettings.json",
-      "web.config",
-      "hosting.json"
+      "configs",
+      "web.config"
     ]
   },
 

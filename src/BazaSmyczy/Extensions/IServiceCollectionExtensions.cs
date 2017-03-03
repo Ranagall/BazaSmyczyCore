@@ -1,6 +1,7 @@
 ﻿using BazaSmyczy.Core.Configs;
 using BazaSmyczy.Core.Services;
 using BazaSmyczy.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,8 @@ namespace BazaSmyczy.Extensions
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<INotificationComposer, NotificationComposer>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         public static void ConfigureAppOptions(this IServiceCollection services, IConfigurationRoot configuration)

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
+using NLog.Web;
 using System;
 
 namespace BazaSmyczy
@@ -20,6 +22,8 @@ namespace BazaSmyczy
                 .AddJsonFile("configs/appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"configs/appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddJsonFile("configs/hosting.json", optional: true);
+
+            env.ConfigureNLog();
 
             if (env.IsDevelopment())
             {
@@ -52,8 +56,8 @@ namespace BazaSmyczy
 
         public async void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory.AddNLog();
+            app.AddNLogWeb();
 
             if (env.IsDevelopment())
             {
