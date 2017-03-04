@@ -31,7 +31,7 @@ namespace BazaSmyczy.Core.Services
                     using (var fileStream = new FileStream(Path.Combine(path, newFileName), FileMode.Create))
                     {
                         image.Save(fileStream);
-                        _logger.LogInformation(EventsIds.File.Saved, "Image uploaded successfully");
+                        _logger.LogInformation(EventsIds.File.Saved, $"Image \"{newFileName}\" uploaded successfully");
                     }
 
                     return newFileName;
