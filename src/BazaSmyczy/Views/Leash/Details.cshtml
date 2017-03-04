@@ -45,9 +45,9 @@
 <hr />
 
 <div>
+<a asp-action="Index" class="btn btn-default">Back to List</a>
 @if (SignInManager.IsSignedIn(User) && User.IsInRole(Roles.Administrator))
 {
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> @:|
+    <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-primary">Edit</a>
 }
-    <a asp-action="Index">Back to List</a>
 </div>
