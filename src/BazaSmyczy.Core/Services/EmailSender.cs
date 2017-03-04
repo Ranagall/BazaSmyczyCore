@@ -3,7 +3,6 @@ using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System.Threading.Tasks;
-using System;
 
 namespace BazaSmyczy.Core.Services
 {
@@ -12,7 +11,7 @@ namespace BazaSmyczy.Core.Services
         private readonly EmailClientConfig _clientOptions;
         private readonly INotificationComposer _notificationComposer;
 
-        public EmailSender(IOptions<EmailClientConfig> clientOptions, INotificationComposer notificationComposer)
+        public EmailSender(IOptionsSnapshot<EmailClientConfig> clientOptions, INotificationComposer notificationComposer)
         {
             _clientOptions = clientOptions.Value;
             _notificationComposer = notificationComposer;
