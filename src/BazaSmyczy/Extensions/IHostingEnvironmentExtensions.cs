@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using BazaSmyczy.Core.Consts;
+using Microsoft.AspNetCore.Hosting;
 using NLog.Web;
 
 namespace BazaSmyczy.Extensions
@@ -10,11 +11,11 @@ namespace BazaSmyczy.Extensions
         {
             if (env.IsProduction())
             {
-                env.ConfigureNLog("configs/nlog.Production.config");
+                env.ConfigureNLog($"{AppDir.ConfigDir}/nlog.Production.config");
             }
             else
             {
-                env.ConfigureNLog("configs/nlog.config");
+                env.ConfigureNLog($"{AppDir.ConfigDir}/nlog.config");
             }
         }
     }

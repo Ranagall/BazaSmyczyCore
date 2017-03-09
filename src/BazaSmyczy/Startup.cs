@@ -1,4 +1,5 @@
-﻿using BazaSmyczy.Extensions;
+﻿using BazaSmyczy.Core.Consts;
+using BazaSmyczy.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace BazaSmyczy
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                //.AddJsonFile("configs/appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"configs/appsettings.{env.EnvironmentName}.json", optional: false, reloadOnChange:true)
-                .AddJsonFile("configs/hosting.json", optional: true);
+                //.AddJsonFile($"{AppDir.ConfigDir}/appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"{AppDir.ConfigDir}/appsettings.{env.EnvironmentName}.json", optional: false, reloadOnChange:true)
+                .AddJsonFile($"{AppDir.ConfigDir}/hosting.json", optional: true);
 
             env.ConfigureNLog();
 

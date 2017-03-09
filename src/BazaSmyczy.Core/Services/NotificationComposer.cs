@@ -7,7 +7,7 @@
             switch (notificationType)
             {
                 case NotificationType.Confirmation:
-                    return $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>";
+                    return $"Please confirm your account by clicking this: <a href='{callbackUrl}'>link</a>";
             }
 
             return null;

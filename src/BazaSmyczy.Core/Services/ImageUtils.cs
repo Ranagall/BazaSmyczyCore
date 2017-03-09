@@ -25,24 +25,22 @@ namespace BazaSmyczy.Core.Services
         public bool IsValidImage(IFormFile file)
         {
             var extension = Path.GetExtension(file.FileName);
-            if (!extension.Equals(".jpg") && !extension.Equals(".jpeg") && !extension.Equals(".png"))
+            if (!IsValidExtension(extension))
             {
                 _logger.LogWarning(EventsIds.File.InvalidExt, $"Unwanted file extension: {extension}");
                 return false;
             }
 
-            if (!file.ContentType.ToLower().Equals("image/jpg") && !file.ContentType.ToLower().Equals("image/jpeg") && !file.ContentType.ToLower().Equals("image/png"))
+            if (!IsValidContentType(file.ContentType))
             {
                 _logger.LogWarning(EventsIds.File.InvalidContentType, $"Unwanted content type: {file.ContentType}");
                 return false;
             }
 
-            var jpegBytes = new byte[] { 255, 216, 255 };
-            var pngBytes = new byte[] { 137, 80, 78 };
             var reader = new BinaryReader(file.OpenReadStream());
-            var fileBytes = reader.ReadBytes(jpegBytes.Length);
+            var fileBytes = reader.ReadBytes(5);
 
-            if (!fileBytes.SequenceEqual(jpegBytes) && !fileBytes.SequenceEqual(pngBytes))
+            if (!IsValidSignature(fileBytes))
             {
                 _logger.LogWarning(EventsIds.File.InvalidSignature, $"Unwanted file signature: {fileBytes}");
                 return false;
@@ -92,6 +90,26 @@ namespace BazaSmyczy.Core.Services
         private double GetScaleFactor(int masterSize, int targetSize)
         {
             return (double)targetSize / masterSize;
+        }
+
+        private bool IsValidExtension(string extension)
+        {
+            return extension.Equals(".jpg") || extension.Equals(".jpeg") || extension.Equals(".png");
+        }
+
+        private bool IsValidContentType(string contentType)
+        {
+            contentType = contentType.ToLower();
+            return contentType.Equals("image/jpg") || contentType.Equals("image/jpeg") || contentType.Equals("image/png");
+        }
+
+        private bool IsValidSignature(byte[] bytes)
+        {
+            var fileBytes = bytes.Take(3);
+            var jpegBytes = new byte[] { 255, 216, 255 };
+            var pngBytes = new byte[] { 137, 80, 78 };
+
+            return fileBytes.SequenceEqual(jpegBytes) || fileBytes.SequenceEqual(pngBytes);
         }
     }
 }
