@@ -1,4 +1,4 @@
-@model IEnumerable<Leash>
+@model BazaSmyczy.Core.Utils.PaginatedList<Leash>
 
 @inject SignInManager<ApplicationUser> SignInManager
 @using BazaSmyczy.Core.Consts
@@ -6,29 +6,41 @@
 @{
     ViewData["Title"] = "Leashes";
 }
-<h2>Index</h2>
+<h2>@ViewData["Title"]</h2>
 
-@if (SignInManager.IsSignedIn(User) && User.IsInRole(Roles.Administrator))
-{
-    <p>
-        <a asp-action="Create" class="btn btn-success btn-sm">Create New</a>
-    </p>
-}
+<div class="row">
+    <div class="col-md-6">
+        @if (SignInManager.IsSignedIn(User) && User.IsInRole(Roles.Administrator))
+        {
+            <a asp-action="Create" class="btn btn-success ">Create New</a>
+        }
+    </div>
+
+    <div class="col-md-6 text-right">
+        <form asp-action="Index" method="get">
+            <div class="form-group">
+                <a asp-action="Index" class="btn btn-default pull-right">Clear</a>
+                <input type="text" class="form-control col-md-3 pull-right" name="searchFilter" value="@ViewData["SearchFilter"]" />
+                <input type="submit" class="btn btn-default" value="Search" />
+            </div>
+        </form>
+    </div>
+</div>
 
 <table class="table table-striped table-bordered table-condensed">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Text)
+                @Html.DisplayNameFor(model => model.First().Text)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Color)
+                @Html.DisplayNameFor(model => model.First().Color)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Size)
+                @Html.DisplayNameFor(model => model.First().Size)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Desc)
+                @Html.DisplayNameFor(model => model.First().Desc)
             </th>
             <th></th>
         </tr>
@@ -53,15 +65,35 @@
                     @if (SignInManager.IsSignedIn(User) && User.IsInRole(Roles.Administrator))
                     {
                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger btn-sm">Delete</a>
-                            <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-primary btn-sm">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-primary btn-sm">Edit</a>
                     }
                     <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-primary btn-sm">Details</a>
-                    <a asp-action="ShowImage" asp-controller="Leash" asp-route-id="@item.ID" data-target="#modal-container" data-toggle="modal" class="btn btn-primary btn-sm">Image</a>
+                    <a asp-action="ShowImage" asp-route-id="@item.ID" data-target="#modal-container" data-toggle="modal" class="btn btn-primary btn-sm">Image</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-page="@(Model.PageIndex - 1)"
+   asp-route-searchFilter="@ViewData["SearchFilter"]"
+   class="btn btn-default @prevDisabled btn">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-page="@(Model.PageIndex + 1)"
+   asp-route-searchFilter="@ViewData["SearchFilter"]"
+   class="btn btn-default @nextDisabled btn pull-right">
+    Next
+</a>
+
+
 <div id="modal-container" class="modal fade hidden-print" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">

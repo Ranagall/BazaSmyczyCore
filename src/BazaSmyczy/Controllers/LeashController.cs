@@ -2,6 +2,7 @@ using BazaSmyczy.Core.Configs;
 using BazaSmyczy.Core.Consts;
 using BazaSmyczy.Core.Extensions;
 using BazaSmyczy.Core.Services;
+using BazaSmyczy.Core.Utils;
 using BazaSmyczy.Data;
 using BazaSmyczy.Models;
 using BazaSmyczy.ViewModels.LeashViewModels;
@@ -46,9 +47,22 @@ namespace BazaSmyczy.Controllers
 
         // GET: Leashes
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchFilter, int? page)
         {
-            return View(await _context.Leashes.ToListAsync());
+            ViewData["SearchFilter"] = searchFilter;
+
+            var leashes = from leash in _context.Leashes
+                          select leash;
+
+            if (!searchFilter.IsNullOrEmpty())
+            {
+                leashes = leashes.Where(leash =>
+                    leash.Text.ToLower().Contains(searchFilter.ToLower()) 
+                    || leash.Desc.ToLower().Contains(searchFilter.ToLower()));
+            }
+
+            int pageSize = 20;
+            return View(await PaginatedList<Leash>.CreateAsync(leashes.AsNoTracking(), page ?? 1, pageSize));
         }
 
         // GET: Leashes/Details/5
@@ -75,7 +89,7 @@ namespace BazaSmyczy.Controllers
         // POST: Leashes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Color,Desc,Size,Text")] Leash leash)
+        public async Task<IActionResult> Create([Bind("Color,Desc,Size,Text")] Leash leash)
         {
             if (ModelState.IsValid)
             {
