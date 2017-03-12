@@ -1,7 +1,7 @@
 ﻿using BazaSmyczy.Core.Utils;
 using System.ComponentModel.DataAnnotations;
 
-namespace BazaSmyczy.Models
+namespace BazaSmyczy.Core.Models
 {
     public class Leash
     {

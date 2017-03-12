@@ -1,17 +1,14 @@
-﻿using System;
+﻿using BazaSmyczy.Core.Stores.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using BazaSmyczy.Data;
 
 namespace BazaSmyczy.Migrations.LeashDb
 {
     [DbContext(typeof(LeashDbContext))]
-    [Migration("20170225223543_init")]
-    partial class init
+    partial class LeashDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)

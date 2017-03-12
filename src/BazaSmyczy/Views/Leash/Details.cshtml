@@ -45,7 +45,8 @@
 <hr />
 
 <div>
-<a asp-action="Index" class="btn btn-default">Back to List</a>
+<a href="@ViewData["ReturnUrl"]" class="btn btn-default">Back</a>
+    
 @if (SignInManager.IsSignedIn(User) && User.IsInRole(Roles.Administrator))
 {
     <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-primary">Edit</a>

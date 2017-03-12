@@ -49,7 +49,7 @@ namespace BazaSmyczy.Core.Services
             return true;
         }
 
-        public async Task<Image> PrepareImage(IFormFile file)
+        public async Task<Image> PrepareImageAsync(IFormFile file)
         {
             using (var stream = new MemoryStream())
             {

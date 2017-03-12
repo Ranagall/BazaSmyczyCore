@@ -17,14 +17,14 @@ namespace BazaSmyczy.Core.Services
             _notificationComposer = notificationComposer;
         }
 
-        public async Task SendAccountConfirmationEmail(string recipient, string callbackUrl)
+        public async Task SendAccountConfirmationEmailAsync(string recipient, string callbackUrl)
         {
             var subject = _notificationComposer.ComposeNotificationSubject(NotificationType.Confirmation);
             var body = _notificationComposer.ComposeNotificationBody(NotificationType.Confirmation, callbackUrl);
-            await SendEmail(recipient, subject, body);
+            await SendEmailAsync(recipient, subject, body);
         }
 
-        public async Task SendEmail(string recipient, string subject, string htmlBody)
+        public async Task SendEmailAsync(string recipient, string subject, string htmlBody)
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(_clientOptions.Name, _clientOptions.Address));

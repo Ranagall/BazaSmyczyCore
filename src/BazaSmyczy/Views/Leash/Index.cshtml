@@ -20,7 +20,7 @@
         <form asp-action="Index" method="get">
             <div class="form-group">
                 <a asp-action="Index" class="btn btn-default pull-right">Clear</a>
-                <input type="text" class="form-control col-md-3 pull-right" name="searchFilter" value="@ViewData["SearchFilter"]" />
+                <input type="text" class="form-control col-md-3 pull-right" name="search" value="@ViewData["SearchFilter"]" />
                 <input type="submit" class="btn btn-default" value="Search" />
             </div>
         </form>
@@ -64,10 +64,10 @@
                 <td>
                     @if (SignInManager.IsSignedIn(User) && User.IsInRole(Roles.Administrator))
                     {
-                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger btn-sm">Delete</a>
-                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-primary btn-sm">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="btn btn-danger btn-sm">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.ID" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="btn btn-primary btn-sm">Edit</a>
                     }
-                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-primary btn-sm">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.ID" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="btn btn-primary btn-sm">Details</a>
                     <a asp-action="ShowImage" asp-route-id="@item.ID" data-target="#modal-container" data-toggle="modal" class="btn btn-primary btn-sm">Image</a>
                 </td>
             </tr>
@@ -82,13 +82,13 @@
 
 <a asp-action="Index"
    asp-route-page="@(Model.PageIndex - 1)"
-   asp-route-searchFilter="@ViewData["SearchFilter"]"
+   asp-route-search="@ViewData["SearchFilter"]"
    class="btn btn-default @prevDisabled btn">
     Previous
 </a>
 <a asp-action="Index"
    asp-route-page="@(Model.PageIndex + 1)"
-   asp-route-searchFilter="@ViewData["SearchFilter"]"
+   asp-route-search="@ViewData["SearchFilter"]"
    class="btn btn-default @nextDisabled btn pull-right">
     Next
 </a>

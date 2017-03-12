@@ -1,7 +1,7 @@
-﻿using BazaSmyczy.Models;
+﻿using BazaSmyczy.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BazaSmyczy.Data
+namespace BazaSmyczy.Core.Stores.Data
 {
     public class LeashDbContext : DbContext
     {

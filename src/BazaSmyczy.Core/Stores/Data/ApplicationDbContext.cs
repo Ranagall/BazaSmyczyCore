@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BazaSmyczy.Core.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using BazaSmyczy.Models;
 
-namespace BazaSmyczy.Data
+namespace BazaSmyczy.Core.Stores.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

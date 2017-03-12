@@ -1,4 +1,5 @@
 ﻿using BazaSmyczy.Core.Consts;
+using BazaSmyczy.Core.Extensions;
 using BazaSmyczy.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

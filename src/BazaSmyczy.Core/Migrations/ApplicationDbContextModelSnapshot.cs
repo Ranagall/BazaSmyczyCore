@@ -1,17 +1,15 @@
-﻿using System;
+﻿using BazaSmyczy.Core.Stores.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using BazaSmyczy.Data;
+using System;
 
 namespace BazaSmyczy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170225223534_init")]
-    partial class init
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)

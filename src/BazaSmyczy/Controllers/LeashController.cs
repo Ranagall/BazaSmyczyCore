@@ -1,20 +1,11 @@
-using BazaSmyczy.Core.Configs;
 using BazaSmyczy.Core.Consts;
-using BazaSmyczy.Core.Extensions;
+using BazaSmyczy.Core.Models;
 using BazaSmyczy.Core.Services;
 using BazaSmyczy.Core.Utils;
-using BazaSmyczy.Data;
-using BazaSmyczy.Models;
 using BazaSmyczy.ViewModels.LeashViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.IO;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BazaSmyczy.Controllers
@@ -22,71 +13,45 @@ namespace BazaSmyczy.Controllers
     [Authorize(Roles = Roles.Administrator)]
     public class LeashController : Controller
     {
-        private readonly LeashDbContext _context;
-        private readonly IHostingEnvironment _environment;
-        private readonly IUploadManager _uploadManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ILogger<LeashController> _logger;
-        private readonly BazaSmyczyOptions _options;
+        private readonly ILeashService _service;
 
-        public LeashController(
-            LeashDbContext context,
-            IHostingEnvironment environment,
-            IUploadManager uploadManager,
-            UserManager<ApplicationUser> userManager,
-            ILogger<LeashController> logger,
-            IOptions<BazaSmyczyOptions> options)
+        public LeashController(ILeashService service)
         {
-            _context = context;
-            _environment = environment;
-            _uploadManager = uploadManager;
-            _userManager = userManager;
-            _logger = logger;
-            _options = options.Value;
+            _service = service;
         }
 
-        // GET: Leashes
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string searchFilter, int? page)
+        public async Task<IActionResult> Index(PageCriteria pageCriteria)
         {
-            ViewData["SearchFilter"] = searchFilter;
+            ViewData["SearchFilter"] = pageCriteria.search;
+            ViewData["ReturnUrl"] = Request.Path + Request.QueryString;
 
-            var leashes = from leash in _context.Leashes
-                          select leash;
+            var list = await _service.GetLeashesAsync(pageCriteria);
 
-            if (!searchFilter.IsNullOrEmpty())
-            {
-                leashes = leashes.Where(leash =>
-                    leash.Text.ToLower().Contains(searchFilter.ToLower()) 
-                    || leash.Desc.ToLower().Contains(searchFilter.ToLower()));
-            }
-
-            int pageSize = 20;
-            return View(await PaginatedList<Leash>.CreateAsync(leashes.AsNoTracking(), page ?? 1, pageSize));
+            return View(list);
         }
 
-        // GET: Leashes/Details/5
         [AllowAnonymous]
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Details(int id, string returnUrl = null)
         {
-            if (id != null)
+            ViewData["ReturnUrl"] = returnUrl;
+
+            var leash = await _service.GetLeashAsync(id);
+            if (leash != null)
             {
-                var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
-                if (leash != null)
-                {
-                    return View(leash);
-                }
+                return View(leash);
             }
+
             return NotFound();
         }
 
-        // GET: Leashes/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Leashes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Color,Desc,Size,Text")] Leash leash)
@@ -94,47 +59,38 @@ namespace BazaSmyczy.Controllers
             if (ModelState.IsValid)
             {
                 var file = Request.Form.Files["picture"];
-
-                var newFileName = await _uploadManager.SaveFile(file, GetUploadsPath());
-
-                if (!newFileName.IsNullOrEmpty())
+                var result = await _service.CreateLeashAsync(leash, file);
+                if (!result.IsError)
                 {
-                    leash.ImageName = newFileName;
-
-                    leash.Color = leash.Color.ToTitleCase();
-                    _context.Add(leash);
-                    await _context.SaveChangesAsync();
-                    _logger.LogInformation(EventsIds.Leash.Created, $"User {await GetCurrentUserNameAsync()} created new leash");
                     return RedirectToAction("Index");
                 }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid image");
-                    return View(leash);
-                }
+
+                AddModelErrors(result.Errors);
             }
+
             return View(leash);
         }
 
-        // GET: Leashes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id, string returnUrl = null)
         {
-            if (id != null)
+            ViewData["ReturnUrl"] = returnUrl;
+
+            var leash = await _service.GetLeashAsync(id);
+            if (leash != null)
             {
-                var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
-                if (leash != null)
-                {
-                    return View(leash);
-                }
+                return View(leash);
             }
+
             return NotFound();
         }
 
-        // POST: Leashes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Color,Desc,ImageName,Size,Text")] Leash leash)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Color,Desc,ImageName,Size,Text")] Leash leash, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
             if (id != leash.ID)
             {
                 return NotFound();
@@ -142,104 +98,74 @@ namespace BazaSmyczy.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                var file = Request.Form.Files["picture"];
+                var result = await _service.EditLeashAsync(leash, file);
+                if (!result.IsError)
                 {
-                    var file = Request.Form.Files["picture"];
-                    if (!file.IsNullOrEmpty())
-                    {
-                        var newImageName = await _uploadManager.ReplaceFile(file, GetUploadsPath(), leash.ImageName);
-
-                        if (!newImageName.IsNullOrEmpty())
-                        {
-                            leash.ImageName = newImageName;
-                        }
-                        else
-                        {
-                            ModelState.AddModelError(string.Empty, "Invalid File");
-                            return View(leash);
-                        }
-                    }
-
-                    leash.Color = leash.Color.ToTitleCase();
-                    _context.Update(leash);
-                    _logger.LogInformation(EventsIds.Leash.Edited, $"User {await GetCurrentUserNameAsync()} edited leash with id: {leash.ID}");
-                    await _context.SaveChangesAsync();
+                    return RedirectToLocal(returnUrl);
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LeashExists(leash.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
+
+                AddModelErrors(result.Errors);
             }
+
             return View(leash);
         }
 
-        // GET: Leashes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id, string returnUrl = null)
         {
-            if (id != null)
+            ViewData["ReturnUrl"] = returnUrl;
+
+            var leash = await _service.GetLeashAsync(id);
+            if (leash != null)
             {
-                var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
-                if (leash != null)
-                {
-                    return View(leash);
-                }
+                return View(leash);
             }
+
             return NotFound();
         }
 
-        // POST: Leashes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string returnUrl = null)
         {
-            var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
+            ViewData["ReturnUrl"] = returnUrl;
 
-            var oldImagePath = Path.Combine(GetUploadsPath(), leash.ImageName ?? string.Empty);
-            _uploadManager.DeleteFileIfExists(oldImagePath);
-
-            _context.Leashes.Remove(leash);
-            await _context.SaveChangesAsync();
-            _logger.LogInformation(EventsIds.Leash.Deleted, $"User {await GetCurrentUserNameAsync()} deleted leash");
-            return RedirectToAction("Index");
+            await _service.DeleteLeashAsync(id);
+            return RedirectToLocal(returnUrl);
         }
 
-        // GET: Leashes/ShowImage/5
+        [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ShowImage(int? id)
+        public async Task<IActionResult> ShowImage(int id)
         {
-            if (id != null)
+            var leash = await _service.GetLeashAsync(id);
+            if (leash != null)
             {
-                var leash = await _context.Leashes.SingleOrDefaultAsync(m => m.ID == id);
-                if (leash != null)
-                {
-                    return PartialView(new ShowImageViewModel { ImageName = leash.ImageName });
-                }
+                return PartialView(new ShowImageViewModel { ImageName = leash.ImageName });
             }
+
             return NotFound();
         }
 
-        private bool LeashExists(int id)
+        private void AddModelErrors(IList<string> list)
         {
-            return _context.Leashes.Any(e => e.ID == id);
+            foreach (var error in list)
+            {
+                ModelState.AddModelError(string.Empty, error);
+            }
         }
 
-        private string GetUploadsPath()
+        private IActionResult RedirectToLocal(string returnUrl)
         {
-            return Path.Combine(_environment.WebRootPath, _options.UploadsPath);
-        }
-
-        private async Task<string> GetCurrentUserNameAsync()
-        {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            return user.UserName;
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction(nameof(LeashController.Index), "Leash");
+            }
         }
     }
 }

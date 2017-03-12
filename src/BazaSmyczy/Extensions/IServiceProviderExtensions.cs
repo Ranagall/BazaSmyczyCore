@@ -1,7 +1,7 @@
 ﻿using BazaSmyczy.Core.Configs;
 using BazaSmyczy.Core.Consts;
-using BazaSmyczy.Data;
-using BazaSmyczy.Models;
+using BazaSmyczy.Core.Models;
+using BazaSmyczy.Core.Stores.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +19,7 @@ namespace BazaSmyczy.Extensions
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            string[] roleNames = { Roles.Administrator, Roles.Member };
-
-            foreach (var role in roleNames)
+            foreach (var role in Roles.AllRoles)
             {
                 var roleExist = await roleManager.RoleExistsAsync(role);
                 if (!roleExist)

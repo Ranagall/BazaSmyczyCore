@@ -7,6 +7,7 @@
             public const int AdminLogged = 50;
             public const int Created = 60;
             public const int ChangedPassword = 65;
+            public const int SetPassword = 66;
             public const int Deleted = 70;
             public const int LockedOut = 71;
         }

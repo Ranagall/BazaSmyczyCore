@@ -1,10 +1,8 @@
-﻿using BazaSmyczy.Core.Consts;
-using BazaSmyczy.Models;
+﻿using BazaSmyczy.Core.Models.Results;
+using BazaSmyczy.Core.Services;
 using BazaSmyczy.ViewModels.ManageViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace BazaSmyczy.Controllers
@@ -12,52 +10,41 @@ namespace BazaSmyczy.Controllers
     [Authorize]
     public class ManageController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ILogger<ManageController> _logger;
+        private readonly IManageService _manageService;
 
-        public ManageController(
-        UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager,
-        ILogger<ManageController> logger)
+        public ManageController(IManageService manageService)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _logger = logger;
+            _manageService = manageService;
         }
 
-        //
-        // GET: /Manage/Index
         [HttpGet]
         public async Task<IActionResult> Index(ManageMessageId? message = null)
         {
             ViewData["StatusMessage"] =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-                : message == ManageMessageId.Error ? "An error has occurred."
                 : "";
 
-            var user = await GetCurrentUserAsync();
+            var user = await _manageService.GetCurrentUserAsync(HttpContext.User);
             if (user == null)
             {
                 return View("Error");
             }
+
             var model = new IndexViewModel
             {
-                HasPassword = await _userManager.HasPasswordAsync(user),
-                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
+                HasPassword = await _manageService.HasPasswordAsync(user),
             };
+
             return View(model);
         }
 
-        // GET: /Manage/ChangePassword
         [HttpGet]
         public IActionResult ChangePassword()
         {
             return View();
         }
 
-        // POST: /Manage/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
@@ -66,30 +53,24 @@ namespace BazaSmyczy.Controllers
             {
                 return View(model);
             }
-            var user = await GetCurrentUserAsync();
-            if (user != null)
+
+            var result = await _manageService.ChangePasswordAsync(HttpContext.User, model.OldPassword, model.NewPassword);
+
+            if (!result.IsError)
             {
-                var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
-                if (result.Succeeded)
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation(EventsIds.Account.ChangedPassword, "User changed their password successfully.");
-                    return RedirectToAction(nameof(Index), new { Message = ManageMessageId.ChangePasswordSuccess });
-                }
-                AddErrors(result);
-                return View(model);
+                return RedirectToAction(nameof(Index), new { Message = ManageMessageId.ChangePasswordSuccess });
             }
-            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
+
+            AddErrors(result);
+            return View(model);
         }
 
-        // GET: /Manage/SetPassword
         [HttpGet]
         public IActionResult SetPassword()
         {
             return View();
         }
 
-        // POST: /Manage/SetPassword
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
@@ -99,41 +80,31 @@ namespace BazaSmyczy.Controllers
                 return View(model);
             }
 
-            var user = await GetCurrentUserAsync();
-            if (user != null)
+            var result = await _manageService.SetPasswordAsync(HttpContext.User, model.NewPassword);
+
+            if (!result.IsError)
             {
-                var result = await _userManager.AddPasswordAsync(user, model.NewPassword);
-                if (result.Succeeded)
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction(nameof(Index), new { Message = ManageMessageId.SetPasswordSuccess });
-                }
-                AddErrors(result);
-                return View(model);
+                return RedirectToAction(nameof(Index), new { Message = ManageMessageId.SetPasswordSuccess });
             }
-            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
+
+            AddErrors(result);
+            return View(model);
         }
 
         #region Helpers
 
-        private void AddErrors(IdentityResult result)
+        private void AddErrors(Result result)
         {
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                ModelState.AddModelError(string.Empty, error);
             }
         }
 
         public enum ManageMessageId
         {
             ChangePasswordSuccess,
-            SetPasswordSuccess,
-            Error
-        }
-
-        private Task<ApplicationUser> GetCurrentUserAsync()
-        {
-            return _userManager.GetUserAsync(HttpContext.User);
+            SetPasswordSuccess
         }
 
         #endregion

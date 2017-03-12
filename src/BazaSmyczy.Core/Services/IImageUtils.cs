@@ -6,7 +6,7 @@ namespace BazaSmyczy.Core.Services
 {
     public interface IImageUtils
     {
-        Task<Image> PrepareImage(IFormFile file);
+        Task<Image> PrepareImageAsync(IFormFile file);
         bool IsValidImage(IFormFile file);
         Image ResizeBiggerToFit(Image image, int toFitWidth, int toFitHeight);
     }
