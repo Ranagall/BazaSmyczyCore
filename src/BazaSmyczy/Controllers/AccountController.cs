@@ -33,7 +33,7 @@ namespace BazaSmyczy.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var result = await _accountService.LoginAsync(model.Username, model.Password, model.RememberMe);
+                var result = await _accountService.LogInAsync(model.Username, model.Password, model.RememberMe);
 
                 if (result.IsLockedOut)
                 {

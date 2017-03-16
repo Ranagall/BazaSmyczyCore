@@ -3,6 +3,7 @@ using BazaSmyczy.Core.Models;
 using BazaSmyczy.Core.Models.Results;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace BazaSmyczy.Core.Services
@@ -22,8 +23,13 @@ namespace BazaSmyczy.Core.Services
             _logger = logger;
         }
 
-        public async Task<LoginResult> LoginAsync(string username, string password, bool rememberMe)
+        public async Task<LoginResult> LogInAsync(string username, string password, bool rememberMe)
         {
+            if (username == null)
+                throw new ArgumentNullException(nameof(username));
+            if (password == null)
+                throw new ArgumentNullException(nameof(password));
+
             var result = new LoginResult();
 
             var user = await _userManager.FindByNameAsync(username);
@@ -36,27 +42,18 @@ namespace BazaSmyczy.Core.Services
                 }
             }
 
-            var sinInResult = await _signInManager.PasswordSignInAsync(username, password, rememberMe, lockoutOnFailure: true);
-            if (sinInResult.Succeeded)
+            var signInResult = await _signInManager.PasswordSignInAsync(username, password, rememberMe, lockoutOnFailure: false);
+            //if (signInResult.Succeeded)
+            //{
+            //    if (await _userManager.IsInRoleAsync(user, Roles.Administrator))
+            //    {
+            //        var ipAddress = HttpContext.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpConnectionFeature>()?.RemoteIpAddress;
+            //        _logger.LogInformation(EventsIds.Account.AdminLogged, $"User from {ipAddress} logged in to admin account( {user.UserName} )");
+            //    }
+            //}
+            if (!signInResult.Succeeded)
             {
-                //if (await _userManager.IsInRoleAsync(user, Roles.Administrator))
-                //{
-                //    var ipAddress = HttpContext.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpConnectionFeature>()?.RemoteIpAddress;
-                //    _logger.LogInformation(EventsIds.Account.AdminLogged, $"User from {ipAddress} logged in to admin account( {user.UserName} )");
-                //}
-                await _userManager.ResetAccessFailedCountAsync(user);
-                return result;
-            }
-
-            if (sinInResult.IsLockedOut)
-            {
-                _logger.LogWarning(EventsIds.Account.LockedOut, $"User {user.UserName} locked out.");
-                result.IsLockedOut = true;
-            }
-            else
-            {
-                var attemptsLeft = IdentityConsts.MaxFailedAccessAttempts - await _userManager.GetAccessFailedCountAsync(user);
-                result.Errors.Add($"Invalid login attempt. Attempts to lock: {attemptsLeft}");
+                result.Errors.Add("Invalid username and/or password");
             }
 
             return result;
@@ -64,6 +61,13 @@ namespace BazaSmyczy.Core.Services
 
         public async Task<RegistrationResult> RegisterAsync(string username, string password, string email)
         {
+            if (username == null)
+                throw new ArgumentNullException(nameof(username));
+            if (password == null)
+                throw new ArgumentNullException(nameof(password));
+            if (email == null)
+                throw new ArgumentNullException(nameof(email));
+
             var result = new RegistrationResult();
             var user = new ApplicationUser { UserName = username, Email = email };
             var existingUser = await _userManager.FindByEmailAsync(email);
@@ -85,11 +89,21 @@ namespace BazaSmyczy.Core.Services
 
         public async Task SendConfirmationEmailAsync(string recipient, string callbackUrl)
         {
+            if (recipient == null)
+                throw new ArgumentNullException(nameof(recipient));
+            if (callbackUrl == null)
+                throw new ArgumentNullException(nameof(callbackUrl));
+
             await _emailSender.SendAccountConfirmationEmailAsync(recipient, callbackUrl);
         }
 
         public async Task<Result> ConfirmEmailAsync(string userId, string code)
         {
+            if (userId == null)
+                throw new ArgumentNullException(nameof(userId));
+            if (code == null)
+                throw new ArgumentNullException(nameof(code));
+
             var result = new Result();
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)

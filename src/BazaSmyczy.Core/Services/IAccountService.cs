@@ -6,7 +6,7 @@ namespace BazaSmyczy.Core.Services
 {
     public interface IAccountService
     {
-        Task<LoginResult> LoginAsync(string username, string password, bool rememberMe);
+        Task<LoginResult> LogInAsync(string username, string password, bool rememberMe);
         Task<RegistrationResult> RegisterAsync(string username, string password, string email);
         Task SendConfirmationEmailAsync(string recipient, string callbackUrl);
         Task<Result> ConfirmEmailAsync(string userId, string code);

@@ -10,6 +10,6 @@ namespace BazaSmyczy.Core.Services
         Task<Result> ChangePasswordAsync(ClaimsPrincipal claimsPrincipal, string oldPassword, string newPassword);
         Task<Result> SetPasswordAsync(ClaimsPrincipal claimsPrincipal, string newPassword);
         Task<ApplicationUser> GetCurrentUserAsync(ClaimsPrincipal user);
-        Task<bool> HasPasswordAsync(ApplicationUser user)
+        Task<bool> HasPasswordAsync(ApplicationUser user);
     }
 }

@@ -34,16 +34,7 @@ namespace BazaSmyczy.Core.Extensions
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {
-            var lockoutOptions = new LockoutOptions()
-            {
-                DefaultLockoutTimeSpan = TimeSpan.FromMinutes(IdentityConsts.LockoutDuration),
-                MaxFailedAccessAttempts = IdentityConsts.MaxFailedAccessAttempts
-            };
-
-            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
-            {
-                config.Lockout = lockoutOptions;
-            })
+            services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
         }
