@@ -8,9 +8,10 @@ using BazaSmyczy.Core.Stores.Data;
 namespace BazaSmyczy.Migrations.LeashDb
 {
     [DbContext(typeof(LeashDbContext))]
-    partial class LeashDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170317193415_AddCreationTime")]
+    partial class AddCreationTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)

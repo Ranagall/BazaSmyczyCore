@@ -6,6 +6,7 @@ using BazaSmyczy.Core.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,6 +38,7 @@ namespace BazaSmyczy.Core.Services
             {
                 leash.ImageName = result.NewFileName;
                 leash.Color = leash.Color.ToTitleCase();
+                leash.CreationTime = DateTime.Now;
 
                 await _store.AddLeashAsync(leash);
             }
@@ -95,6 +97,8 @@ namespace BazaSmyczy.Core.Services
             var searchFilter = pageCriteria.search;
 
             var leashes = await _store.GetLeashesAsync();
+
+            leashes = leashes.OrderByDescending(z => z.CreationTime);
 
             if (!searchFilter.IsNullOrEmpty())
             {

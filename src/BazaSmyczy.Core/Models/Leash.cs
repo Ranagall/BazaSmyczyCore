@@ -1,4 +1,5 @@
 ﻿using BazaSmyczy.Core.Utils;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace BazaSmyczy.Core.Models
@@ -19,5 +20,8 @@ namespace BazaSmyczy.Core.Models
         public string Color { get; set; }
 
         public string Desc { get; set; }
+
+        [Required]
+        public DateTime CreationTime { get; set; }
     }
 }
