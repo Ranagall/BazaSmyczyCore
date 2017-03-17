@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using BazaSmyczy.Core.Consts;
 
 namespace BazaSmyczy
 {
@@ -14,7 +15,7 @@ namespace BazaSmyczy
         {
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("configs/hosting.json", optional: true)
+                .AddJsonFile($"{AppDir.ConfigDir}/hosting.json", optional: true)
                 .AddEnvironmentVariables()
                 .Build();
 
