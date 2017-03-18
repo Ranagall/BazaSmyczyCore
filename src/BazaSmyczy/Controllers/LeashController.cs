@@ -1,4 +1,5 @@
 using BazaSmyczy.Core.Consts;
+using BazaSmyczy.Core.Extensions;
 using BazaSmyczy.Core.Models;
 using BazaSmyczy.Core.Services;
 using BazaSmyczy.Core.Utils;
@@ -59,6 +60,12 @@ namespace BazaSmyczy.Controllers
             if (ModelState.IsValid)
             {
                 var file = Request.Form.Files["picture"];
+                if(file.IsNullOrEmpty())
+                {
+                    ModelState.AddModelError(string.Empty, "Select file");
+                    return View(leash);
+                }
+
                 var result = await _service.CreateLeashAsync(leash, file);
                 if (!result.IsError)
                 {
