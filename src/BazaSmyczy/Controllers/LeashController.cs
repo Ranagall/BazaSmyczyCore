@@ -87,7 +87,7 @@ namespace BazaSmyczy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Color,Desc,ImageName,Size,Text")] Leash leash, string returnUrl = null)
+        public async Task<IActionResult> Edit(int id, Leash leash, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
