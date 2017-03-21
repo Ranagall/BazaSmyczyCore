@@ -41,6 +41,7 @@ namespace BazaSmyczy.Core.Extensions
 
         public static void AddInterfaces(this IServiceCollection services, IConfigurationRoot configuration)
         {
+            services.AddSingleton(configuration);
             services.AddStores();
 
             services.AddTransient<ILeashService, LeashService>();
