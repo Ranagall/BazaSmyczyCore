@@ -64,14 +64,12 @@ namespace BazaSmyczy.Core.Services
                 {
                     var fileResult = await _uploadManager.ReplaceFileAsync(file, leash.ImageName);
 
-                    if (!fileResult.IsError)
-                    {
-                        leash.ImageName = fileResult.NewFileName;
-                    }
-                    else
+                    if (fileResult.IsError)
                     {
                         return fileResult;
                     }
+
+                    leash.ImageName = fileResult.NewFileName;
                 }
 
                 leash.Color = leash.Color.ToTitleCase();
