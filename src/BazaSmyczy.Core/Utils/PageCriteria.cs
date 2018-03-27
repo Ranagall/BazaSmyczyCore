@@ -2,8 +2,8 @@
 {
     public class PageCriteria
     {
-        public string search { get; set; }
-        public int page { get; set; } = 1;
-        public int pageSize { get; set; } = 20;
+        public string Search { get; set; }
+        public int Page { get; set; } = 1;
+        public int PageSize { get; set; } = 20;
     }
 }
